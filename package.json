@@ -1,0 +1,14 @@
+{
+  "name": "multi-person-online-editing",
+  "version": "1.0.0",
+  "description": "多人在线编辑软件",
+  "scripts": {
+    "client": "cd client && npm start",
+    "install-client": "cd client && npm install"
+  },
+  "keywords": ["collaborative", "editing", "real-time"],
+  "author": "",
+  "license": "ISC"
+}
+
+
