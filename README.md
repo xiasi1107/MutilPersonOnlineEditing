@@ -34,14 +34,25 @@ git clone <repository-url>
 cd mutil_person_online_editing
 ```
 
-2. 初始化数据库
-```bash
-mysql -u root -p < database/multi_person_editing.sql
+2. 数据库配置
+
+在 MySQL 中建库并导入脚本（**需手动执行**，启动后端不会自动跑 SQL）。库名需与下面 `.env` 里 `DB_NAME` 一致，示例为 `multi_person_editing`。
+
+登录 MySQL 执行：
+
+```sql
+CREATE DATABASE IF NOT EXISTS multi_person_editing
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-3. 配置环境变量
+在项目根目录执行导入（把 `root`、库名换成你的实际账号与库名）：
 
-在 server/ 目录创建 .env 文件：
+```bash
+mysql -u root -p multi_person_editing < database/multi_person_editing.sql
+```
+
+在 `server/` 目录创建 `.env`（可复制 `server/.env.example`），数据库项与上面一致，并补充 JWT 等，例如：
+
 ```env
 DB_HOST=localhost
 DB_PORT=3306
@@ -54,7 +65,7 @@ PORT=3001
 AGORA_APP_ID=你的Agora_App_ID
 ```
 
-4. 安装依赖
+3. 安装依赖
 
 后端：
 ```bash
@@ -71,33 +82,34 @@ cd client
 npm install
 ```
 
-5. 创建上传目录
+4. 创建上传目录
 ```bash
 mkdir -p server/uploads/avatars
 ```
 
-6. 运行项目
+5. 运行项目
 
-终端1 - 后端：
+终端 1 — 后端：`main.py` 启动时会将工作目录设为 `server/`，可在**仓库根目录**或 **`server` 目录**下执行，例如：
+
 ```bash
-cd server
-python main.py
-或: uvicorn main:app --reload --host 0.0.0.0 --port 3001
+python server/main.py
 ```
 
-终端2 - 前端：
+若已 `cd server`，则执行 `python main.py`。也可在 `server` 目录下使用：`uvicorn main:app --reload --host 0.0.0.0 --port 3001`。
+
+终端 2 — 前端：
 ```bash
 cd client
 npm start
 ```
 
-7. 访问应用
+6. 访问应用
 
-前端：http://localhost:3000
-后端 API：http://localhost:3001
-API 文档：http://localhost:3001/docs
+前端：http://localhost:3000  
+后端 API：http://localhost:3001  
+API 文档：http://localhost:3001/docs  
 
-默认账户：admin / admin123（生产环境请修改密码）
+首次使用：`database/multi_person_editing.sql` 主要为表结构；若库中尚无用户，请在前端注册页创建账号后再登录。
 
 项目结构
 
@@ -147,49 +159,13 @@ WebSocket 事件
 
 数据库连接失败：检查 MySQL 服务、.env 配置、数据库权限
 
-端口被占用：修改 server/.env 中的 PORT 或关闭占用进程
+端口被占用：关闭占用 3000、3001 的进程，或同步修改 `server/main.py` 中 `uvicorn.run` 的端口与 `client` 开发代理中的端口
 
 依赖安装失败：使用虚拟环境，或使用国内镜像源
 
 Socket.io 连接失败：检查后端服务、防火墙、代理配置
 
 视频会议无法连接：检查 AGORA_APP_ID 配置、浏览器权限、Windows 摄像头设置
-
-生产环境部署
-
-1. 构建前端
-```bash
-cd client
-npm run build
-```
-
-2. 运行后端
-```bash
-pip install gunicorn
-cd server
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:3001
-```
-
-3. 配置 Nginx（可选）
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    location / {
-        root /path/to/client/build;
-        try_files $uri $uri/ /index.html;
-    }
-    location /api {
-        proxy_pass http://localhost:3001;
-    }
-    location /socket.io {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
 
 注意事项
 

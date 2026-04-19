@@ -1,3 +1,8 @@
+import os
+
+# 保证从任意工作目录启动时，.env / uploads 等相对路径都相对于 server/
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
