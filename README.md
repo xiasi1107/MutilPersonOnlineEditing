@@ -30,7 +30,7 @@ MySQL 5.7+
 
 1. 克隆项目
 ```bash
-git clone <repository-url>
+git clone https://github.com/xiasi1107/MutilPersonOnlineEditing.git
 cd mutil_person_online_editing
 ```
 
