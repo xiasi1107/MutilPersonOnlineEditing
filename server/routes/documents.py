@@ -65,7 +65,7 @@ async def create_document(
 
 @router.get("")
 @router.get("/")
-async def get_documents(
+def get_documents(
     page: int = 1,
     limit: int = 20,
     folder: Optional[str] = None,

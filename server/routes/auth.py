@@ -76,7 +76,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     )
 
 @router.post("/login", response_model=TokenResponse)
-async def login(login_data: UserLogin, db: Session = Depends(get_db)):
+def login(login_data: UserLogin, db: Session = Depends(get_db)):
     """用户登录"""
     # 查找用户（支持用户名、邮箱、手机号登录）
     user = db.query(User).filter(
